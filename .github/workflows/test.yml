@@ -1,0 +1,22 @@
+name: Test JSON
+on: push
+jobs:
+  test_json:
+    runs-on: windows-latest
+    outputs:
+      diff: ${{ steps.output-json.outputs.diff}}
+
+    steps:
+      - name: output json
+        id: output-json
+        run: |
+          $jsonThing = ["one", "two", "three"]
+          echo "::set-output name=diff::$jsonThing"
+
+  test-parse:
+    needs: test_json
+    runs-on: windows-latest
+    steps:
+      - name: input and print json
+        run: |
+          echo ${{ needs.test-json.outputs.diff }}
