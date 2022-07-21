@@ -10,7 +10,7 @@ jobs:
       - name: output json
         id: output-json
         run: |
-          $jsonThing = ["one", "two", "three"]
+          $jsonThing = '["one", "two", "three"]'
           echo "::set-output name=diff::$jsonThing"
 
   test-parse:
