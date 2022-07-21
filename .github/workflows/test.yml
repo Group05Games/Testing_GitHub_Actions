@@ -19,4 +19,4 @@ jobs:
     steps:
       - name: input and print json
         run: |
-          echo ${{ needs.test-json.outputs.diff }}
+          echo ${{ needs.test_json.outputs.diff }}
