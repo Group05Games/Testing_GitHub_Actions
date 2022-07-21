@@ -20,3 +20,13 @@ jobs:
       - name: input and print json
         run: |
           echo ${{ fromJSON(needs.test_json.outputs.diff) }}
+
+  matrix-test:
+    needs: test_json
+    runs-on: windows-latest
+    strategy:
+      matrix: 
+        package: ${{ fromJSON(needs.test_json.outputs.diff) }}
+
+    steps:
+      - run: echo "${{ matrix.package }}"
