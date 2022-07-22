@@ -9,8 +9,12 @@ jobs:
     steps:
       - name: output json
         id: output-json
+        shell: pwsh
         run: |
-          $jsonThing = '["one", "two", "three"]'
+          #$jsonThing = '["one", "two", "three"]'
+          $jsonThing = "one two three"
+          $jsonThing = $jsonThing.split(" ")
+          $jsonThing = ConvertTo-Json -Compress $jsonThing
           echo "::set-output name=diff::$jsonThing"
 
   test-parse:
