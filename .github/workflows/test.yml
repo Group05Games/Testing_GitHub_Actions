@@ -13,7 +13,8 @@ jobs:
         run: |
           #$jsonThing = '["one", "two", "three"]'
           #$jsonThing = "one two three"
-          $jsonThing = "one"
+          #$jsonThing = "one"
+          $jsonThing = ""
           $jsonThing = $jsonThing.split(" ")
           $jsonThing = ConvertTo-Json -Compress $jsonThing
           echo "::set-output name=diff::$jsonThing"
