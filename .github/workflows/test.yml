@@ -12,7 +12,8 @@ jobs:
         shell: pwsh
         run: |
           #$jsonThing = '["one", "two", "three"]'
-          $jsonThing = "one two three"
+          #$jsonThing = "one two three"
+          $jsonThing = "one"
           $jsonThing = $jsonThing.split(" ")
           $jsonThing = ConvertTo-Json -Compress $jsonThing
           echo "::set-output name=diff::$jsonThing"
