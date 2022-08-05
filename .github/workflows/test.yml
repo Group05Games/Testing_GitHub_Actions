@@ -33,7 +33,9 @@ jobs:
     strategy:
       matrix: 
         package: ${{ fromJSON(needs.test_json.outputs.diff) }}
-    environmet: Release ${{ matrix.package }}
+    environmet: 
+      name: Release ${{ matrix.package }}
+      url: ${{ matrix.package }} #${{ fromJSON(needs.test_json.outputs.diff) }}
     name: matrix-test-${{ matrix.package }}
 
     steps:
