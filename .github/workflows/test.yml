@@ -67,7 +67,7 @@ jobs:
       - run: echo "Approved ${{ matrix.package }}"
 
   pack_and_publish:
-    needs: [test_json, ok_to_publish]
+    needs: [test_json]
     runs-on: windows-latest
 
     environment: 
