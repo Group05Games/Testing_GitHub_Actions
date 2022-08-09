@@ -29,6 +29,7 @@ jobs:
 
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix: 
         package: ${{ fromJSON(needs.test_json.outputs.diff) }}
     environment: 
@@ -38,9 +39,9 @@ jobs:
 
     steps:
       - run: echo "${{ matrix.package }}"
-      - id: set-outputs
+      - id: set-outputs-${{ matrix.package }}
         run: |
-          echo "::set-output name=approved::${{ matrix.package }},${{ steps.set-outputs.outputs.approved }}"     #APPROVED_LIST=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
+          echo "::set-output name=approved::${{ matrix.package }},${{ steps.set-outputs.outputs.approved }}"
 
   format_matrix:
     needs: matrix-test
