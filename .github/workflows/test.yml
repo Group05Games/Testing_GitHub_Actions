@@ -27,8 +27,8 @@ jobs:
     runs-on: windows-latest
 
     strategy:
+      fail-fast: false
       matrix: 
-        fail-fast: false
         package: ${{ fromJSON(needs.test_json.outputs.diff) }}
     environment: 
       name: Release ${{ matrix.package }}
