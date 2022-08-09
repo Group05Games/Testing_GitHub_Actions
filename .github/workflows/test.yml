@@ -29,7 +29,6 @@ jobs:
 
     strategy:
       fail-fast: false
-
       matrix: 
         package: ${{ fromJSON(needs.test_json.outputs.diff) }}
     environment: 
@@ -41,7 +40,7 @@ jobs:
       - run: echo "${{ matrix.package }}"
       - id: set-outputs
         run: |
-          echo "::set-output name=approved::${{ matrix.package }},${{ steps.set-outputs.outputs.approved }}"
+          echo "::set-output name=approved::${{ matrix.package }},${{ outputs.approved }}"
 
   format_matrix:
     needs: matrix-test
