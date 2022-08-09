@@ -38,7 +38,7 @@ jobs:
     steps:
       - run: echo "${{ matrix.package }}"
       - run: |
-          echo "${{ env.APPROVED_LIST }}=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
+          ${{ env.APPROVED_LIST }}=${{ env.APPROVED_LIST }},${{ matrix.package }}
 
   format_matrix:
     needs: matrix-test
