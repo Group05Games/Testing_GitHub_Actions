@@ -1,7 +1,5 @@
 name: Test JSON
 on: push
-env:
-  APPROVED_LIST: ""
 
 jobs:
   test_json:
@@ -42,7 +40,7 @@ jobs:
       - run: echo "${{ matrix.package }}"
       - id: set-outputs
         run: |
-          echo "::set-output name=approved::${{ matrix.package }}"     #APPROVED_LIST=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
+          echo "::set-output name=approved::${{ matrix.package }},${{ steps.set-outputs.outputs.approved }}"     #APPROVED_LIST=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
 
   format_matrix:
     needs: matrix-test
