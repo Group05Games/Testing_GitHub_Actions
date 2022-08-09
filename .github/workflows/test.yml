@@ -20,54 +20,46 @@ jobs:
           $jsonThing = ConvertTo-Json -Compress $jsonThing
           echo "::set-output name=diff::$jsonThing"
 
-  matrix-test:
-    needs: test_json
-    runs-on: windows-latest
+  #matrix-test:
+  #  needs: test_json
+  #  runs-on: windows-latest
+  #  strategy:
+  #    fail-fast: false
+  #    matrix: 
+  #      package: ${{ fromJSON(needs.test_json.outputs.diff) }}
+  #  environment: 
+  #    name: Release ${{ matrix.package }}
+  #    url: ${{ matrix.package }}
+  #  name: matrix-test-${{ matrix.package }}
+#
+  #  steps:
+  #    - run: echo "${{ matrix.package }}"
 
-    outputs:
-      approved: ${{ steps.set-outputs.outputs.approved}}
-
-    strategy:
-      fail-fast: false
-
-      matrix: 
-        package: ${{ fromJSON(needs.test_json.outputs.diff) }}
-    environment: 
-      name: Release ${{ matrix.package }}
-      url: ${{ matrix.package }}
-    name: matrix-test-${{ matrix.package }}
-
-    steps:
-      - run: echo "${{ matrix.package }}"
-      - id: set-outputs
-        run: |
-          echo "::set-output name=approved::${{ matrix.package }},${{ steps.set-outputs.outputs.approved }}"
-
-  format_matrix:
-    needs: matrix-test
-    runs-on: windows-latest
-    outputs:
-      approved: ${{ steps.format-json.outputs.approved}}
-    steps:
-      - id: format-json
-        run: |
-          $approvedJSON = ${{ needs.matrix-test.outputs.approved }}.split(",")
-          #$approvedJSON = $approvedJSON | Where-Object { $_ -Match }
-          $approvedJSON = ConvertTo-Json -Compress $approvedJSON
-          echo "::set-output name=approved::$approvedJSON"
+  #format_matrix:
+  #  needs: matrix-test
+  #  runs-on: windows-latest
+  #  outputs:
+  #    approved: ${{ steps.format-json.outputs.approved}}
+  #  steps:
+  #    - id: format-json
+  #      run: |
+  #        $approvedJSON = ${{ needs.matrix-test.outputs.approved }}.split(",")
+  #        #$approvedJSON = $approvedJSON | Where-Object { $_ -Match }
+  #        $approvedJSON = ConvertTo-Json -Compress $approvedJSON
+  #        echo "::set-output name=approved::$approvedJSON"
 
   pack_and_publish:
-    needs: format_matrix
+    needs: test_json
     runs-on: windows-latest
     strategy:
       matrix:
-        approved: ${{ fromJSON(needs.format_matrix.outputs.approved) }}
-    name: pack_and_publish_${{ matrix.approved }}
+        package: ${{ fromJSON(needs.test_json.outputs.diff) }}
+    name: pack_and_publish_${{ matrix.package }}
 
     steps:
       - run: |
           echo "Matrix item  - ${{ matrix.approved }}"
-          echo "${{ env.APPROVED_LIST }}"
+          echo "donet pack ${{ matrix.package }}"
 
 
     #Try building a string in json form and ConvertTo JSON
