@@ -38,7 +38,7 @@ jobs:
     steps:
       - run: echo "${{ matrix.package }}"
       - run: |
-          ${{ env.APPROVED_LIST }}=${{ env.APPROVED_LIST }},${{ matrix.package }}
+          echo $env:APPROVED_LIST=${{ env.APPROVED_LIST }},${{ matrix.package }}
 
   format_matrix:
     needs: matrix-test
