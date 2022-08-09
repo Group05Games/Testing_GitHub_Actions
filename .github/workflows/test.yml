@@ -64,8 +64,8 @@ jobs:
 
     steps:
       - run: |
-        echo "Matrix item  - ${{ matrix.approved }}"
-        echo "${{ env.APPROVED_LIST }}"
+          echo "Matrix item  - ${{ matrix.approved }}"
+          echo "${{ env.APPROVED_LIST }}"
 
 
     #Try building a string in json form and ConvertTo JSON
