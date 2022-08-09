@@ -1,5 +1,8 @@
 name: Test JSON
 on: push
+env:
+  APPROVED_LIST: ""
+
 jobs:
   test_json:
     runs-on: windows-latest
@@ -19,19 +22,13 @@ jobs:
           $jsonThing = ConvertTo-Json -Compress $jsonThing
           echo "::set-output name=diff::$jsonThing"
 
-  test-parse:
-    needs: test_json
-    runs-on: windows-latest
-    steps:
-      - name: input and print json
-        run: |
-          echo ${{ fromJSON(needs.test_json.outputs.diff) }}
-
   matrix-test:
     needs: test_json
     runs-on: windows-latest
+
     strategy:
       matrix: 
+        fail-fast: false
         package: ${{ fromJSON(needs.test_json.outputs.diff) }}
     environment: 
       name: Release ${{ matrix.package }}
@@ -40,3 +37,35 @@ jobs:
 
     steps:
       - run: echo "${{ matrix.package }}"
+      - run: |
+          echo "APPROVED_LIST=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
+
+  format_matrix:
+    needs: matrix-test
+    runs-on: windows-latest
+    outputs:
+      approved: ${{ steps.format-json.outputs.approved}}
+    steps:
+      - id: format-json
+        run: |
+          $approvedJSON = ${{ env.APPROVED_LIST }}.split(",")
+          #$approvedJSON = $approvedJSON | Where-Object { $_ -Match }
+          $approvedJSON = ConvertTo-Json -Compress $approvedJSON
+          echo "::set-output name=approved::$approvedJSON"
+
+
+  pack_and_publish:
+    needs: format_matrix
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        approved: ${{ fromJSON(needs.format-json.outputs.approved) }}
+    name: pack_and_publish_${{ matrix.approved }}
+
+    steps:
+      - run: |
+        echo "Matrix item  - ${{ matrix.approved }}"
+        echo "${{ env.APPROVED_LIST }}"
+
+
+    #Try building a string in json form and ConvertTo JSON
