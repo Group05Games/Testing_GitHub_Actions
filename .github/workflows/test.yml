@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - run: echo "${{ matrix.package }}"
-      - id: set-outputs-${{ matrix.package }}
+      - id: set-outputs
         run: |
           echo "::set-output name=approved::${{ matrix.package }},${{ steps.set-outputs.outputs.approved }}"
 
