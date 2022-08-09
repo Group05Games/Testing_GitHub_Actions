@@ -51,14 +51,20 @@ jobs:
   pack_and_publish:
     needs: test_json
     runs-on: windows-latest
+
+    environment: 
+      name: Release ${{ matrix.package }}
+      url: ${{ matrix.package }}
+
     strategy:
       matrix:
         package: ${{ fromJSON(needs.test_json.outputs.diff) }}
+
     name: pack_and_publish_${{ matrix.package }}
 
     steps:
       - run: |
-          echo "Matrix item  - ${{ matrix.approved }}"
+          echo "Matrix item  - ${{ matrix.package }}"
           echo "donet pack ${{ matrix.package }}"
 
 
