@@ -48,8 +48,25 @@ jobs:
   #        $approvedJSON = ConvertTo-Json -Compress $approvedJSON
   #        echo "::set-output name=approved::$approvedJSON"
 
-  pack_and_publish:
+  ok_to_publish:
     needs: test_json
+    runs-on: windows-latest
+
+    environment: 
+      name: Release ${{ matrix.package }}
+      url: ${{ matrix.package }}
+
+    strategy:
+      matrix:
+        package: ${{ fromJSON(needs.test_json.outputs.diff) }}
+
+    name: ok_to_publish_${{ matrix.package }}
+
+    steps:
+      - run: echo "Approved ${{ matrix.package }}"
+
+  pack_and_publish:
+    needs: [test_json, ok_to_publish]
     runs-on: windows-latest
 
     environment: 
