@@ -38,7 +38,7 @@ jobs:
     steps:
       - run: echo "${{ matrix.package }}"
       - run: |
-          echo "APPROVED_LIST=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
+          echo "${{ env.APPROVED_LIST }}=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
 
   format_matrix:
     needs: matrix-test
@@ -52,7 +52,6 @@ jobs:
           #$approvedJSON = $approvedJSON | Where-Object { $_ -Match }
           $approvedJSON = ConvertTo-Json -Compress $approvedJSON
           echo "::set-output name=approved::$approvedJSON"
-
 
   pack_and_publish:
     needs: format_matrix
