@@ -26,19 +26,23 @@ jobs:
     needs: test_json
     runs-on: windows-latest
 
+    outputs:
+      approved: ${{ steps.set-outputs.outputs.approved}}
+
     strategy:
       fail-fast: false
       matrix: 
         package: ${{ fromJSON(needs.test_json.outputs.diff) }}
     environment: 
       name: Release ${{ matrix.package }}
-      url: ${{ matrix.package }} #${{ fromJSON(needs.test_json.outputs.diff) }}
+      url: ${{ matrix.package }}
     name: matrix-test-${{ matrix.package }}
 
     steps:
       - run: echo "${{ matrix.package }}"
-      - run: |
-          echo "APPROVED_LIST+=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
+      - id: set-outputs
+        run: |
+          echo "::set-output name=approved::${{ matrix.package }}"     #APPROVED_LIST=${{ env.APPROVED_LIST }},${{ matrix.package }}" >> $env:GITHUB_ENV
 
   format_matrix:
     needs: matrix-test
@@ -48,7 +52,7 @@ jobs:
     steps:
       - id: format-json
         run: |
-          $approvedJSON = ${{ env.APPROVED_LIST }}.split(",")
+          $approvedJSON = ${{ needs.matrix-test.outputs.approved }}.split(",")
           #$approvedJSON = $approvedJSON | Where-Object { $_ -Match }
           $approvedJSON = ConvertTo-Json -Compress $approvedJSON
           echo "::set-output name=approved::$approvedJSON"
@@ -58,7 +62,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        approved: ${{ fromJSON(needs.format-json.outputs.approved) }}
+        approved: ${{ fromJSON(needs.format_matrix.outputs.approved) }}
     name: pack_and_publish_${{ matrix.approved }}
 
     steps:
